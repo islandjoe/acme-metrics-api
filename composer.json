@@ -1,0 +1,22 @@
+{
+    "name": "islandjoe/dopmn",
+    "description": "Dopmn - a lightweight Docker+PHP+MySQL+nginx dev framework",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arthur Kho",
+            "email": "islandjoe@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload":
+    {
+        "psr-4":
+        {
+            "Dopmn\\" : "app/",
+            "Test\\":   "test/"
+        }
+    }
+}
