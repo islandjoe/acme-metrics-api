@@ -9,15 +9,17 @@ class PostModel
   use Iterator;
 
   private $posts = [];
+  private $store;
+
+  public function __construct()
+  {
+    $this->store = DataFetcher::getInstance()->getStore();
+  }
 
   public function getAllFromPage(int $num)
   {
     if ($num > 0 || $num < 11)
-    {
-      $store = DataFetcher::getInstance();
-      $page  = $store->getStore();
-
-      return $page[$num - 1];;
+    { return $this->store[$num - 1];;
     }
 
     // TODO: Flash the message: 'Only between 1 and 10'
@@ -26,9 +28,8 @@ class PostModel
 
   public function getAllFromUser(string $id)
   {
-    $store = DataFetcher::getInstance()->getStore();
     // 👀
-    foreach ($this->iterate($store) as $data)
+    foreach ($this->iterate($this->store) as $data)
     {
       // 👀
       foreach ($data as $posts)
@@ -43,24 +44,20 @@ class PostModel
 
   public function getAllFromMonth(string $created_time)
   {
-    $store = DataFetcher::getInstance()->getStore();
-
+    // '2019-09-21T23:05:58+00:00'...
     $dx = function($date) {
-      return \substr($date, 0, 7);
+      return \substr($date, 0, 7); //-> '2019-09'
     };
 
-    foreach ($this->iterate($store) as $data)
-    {
-      // 👀
+    foreach ($this->iterate($this->store) as $data)
+    { // 👀
       foreach ($data as $posts)
       {
         if ($dx($posts->created_time) === $created_time)
-        {
-          $this->posts[] = $posts;
+        { $this->posts[] = $posts;
         }
       }
     }
-
     return $this->posts;
   }
 
@@ -71,8 +68,7 @@ trait Iterator
   public function iterate(array $data)
   {
     foreach ($data as $obj)
-    {
-      yield $obj->data->posts;
+    { yield $obj->data->posts;
     }
   }
 }
