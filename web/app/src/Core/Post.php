@@ -9,6 +9,10 @@ class Post
   private $message;
   private $type;
 
+  protected $length = function() {
+    return \mb_strlen($this->message, 'UTF8');
+  };
+
   public function __construct(
       string $id,
       string $created_time,
@@ -25,7 +29,8 @@ class Post
     $this->type = $type;
   }
 
-  public function getDateCreated(bool $year=true, bool $month=true): array
+
+  public function getDateCreated(): array
   {
     $yyyymm = explode('T', $this->created_time)[0];
     list($yyyy, $mm) = \explode('-', $yyyymm);
@@ -33,9 +38,10 @@ class Post
     return ['year'=> $yyyy,'month'=> $mm];
   }
 
-  private function getLength(): int
-  {
-    return \mb_strlen($this->message, 'UTF8');
-  }
+  // TODO: Refactor into a computed property?
+  // private function getLength(): int
+  // {
+  //   return \mb_strlen($this->message, 'UTF8');
+  // }
 
 }
