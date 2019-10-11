@@ -16,7 +16,7 @@ class PostsController extends AbstractController
   //:posts/page/:num
   public function page(int $num)
   {
-    $this->posts = (new PostModel())->getPage($num);
+    $this->posts = (new PostModel())->getAllFromPage($num);
     $this->render('page');
   }
 
