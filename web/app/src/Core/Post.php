@@ -25,4 +25,9 @@ class Post
     $this->type = $type;
   }
 
+  public function getLength(): int
+  {
+    return \mb_strlen($this->message, 'UTF8');
+  }
+
 }

@@ -20,7 +20,7 @@ class PostModel
     // TODO: Flash the message: 'Only between 1 and 10'
   }
 
-  public function getAllFromUser(string $id)
+  public function getAllFromUser(string $id): array
   {
 
     $page = function() {
@@ -34,21 +34,19 @@ class PostModel
       }
     };
 
-    $usersPosts = [];
+    // TODO: 👀
     foreach ($page() as $_posts)
-    { /// $_post: ->posts, ->page ///
-
-        foreach ($_posts as $_post) {
-          // \var_export($_post);
-          // var_dump( $_post[0]->from_id);
-          if ($_post->from_id === $id)
-          {
-            $usersPosts[] = $_post;
-          }
+    {
+      foreach ($_posts as $_post)
+      {
+        if ($_post->from_id === $id)
+        {
+          $this->posts[] = $_post;
         }
+      }
     }
 
-    return $usersPosts;
+    return $this->posts;
   }
 
 }
