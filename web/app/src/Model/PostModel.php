@@ -22,19 +22,33 @@ class PostModel
 
   public function getAllFromUser(string $id)
   {
-    $posts = json_decode(
-      \file_get_contents( APP.'src/View/posts/p'.$num.'.json')
-    );
 
-
-    foreach ($posts->data->posts as $post) {
-      if ($post->from_id == $id)
+    $page = function() {
+      foreach (range(1, 2) as $num)
       {
-        $this->posts[] = $post;
+
+        $_page = json_decode(
+        \file_get_contents( APP.'src/View/posts/p'.$num.'.json')
+        );
+        yield $_page->data->posts;
       }
+    };
+
+    $usersPosts = [];
+    foreach ($page() as $_posts)
+    { /// $_post: ->posts, ->page ///
+
+        foreach ($_posts as $_post) {
+          // \var_export($_post);
+          // var_dump( $_post[0]->from_id);
+          if ($_post->from_id === $id)
+          {
+            $usersPosts[] = $_post;
+          }
+        }
     }
 
-    return $this->posts;
+    return $usersPosts;
   }
 
 }
