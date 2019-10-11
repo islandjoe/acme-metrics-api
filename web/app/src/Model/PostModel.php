@@ -1,52 +1,49 @@
 <?php namespace Dopmn\Model;
 
 use Exception;
+use Dopmn\Core\Post;
+use Dopmn\Core\DataFetcher;
 
 class PostModel
 {
   private $posts = [];
 
-  public function getPage(int $num)
+  public function getAllFromPage(int $num)
   {
     if ($num > 0 || $num < 11)
     {
-      $this->posts = json_decode(
-        \file_get_contents( APP.'src/View/posts/p'.$num.'.json')
-      );
+      $store = DataFetcher::getInstance();
+      $page  = $store->getData();
 
-      return $this->posts->data;
+      return $page[$num - 1];;
     }
 
     // TODO: Flash the message: 'Only between 1 and 10'
   }
 
-  public function getAllFromUser(string $id): array
+  public function getAllFromUser(string $id)
   {
 
-    $page = function() {
-      foreach (range(1, 2) as $num)
-      {
+    $store = DataFetcher::getInstance();
+    $posts = $store->getData();
 
-        $_page = json_decode(
-        \file_get_contents( APP.'src/View/posts/p'.$num.'.json')
-        );
-        yield $_page->data->posts;
-      }
-    };
-
-    // TODO: 👀
-    foreach ($page() as $_posts)
+    foreach ($posts as $_posts)
     {
-      foreach ($_posts as $_post)
+      $__posts = $_posts->data->posts;
+
+      foreach ($__posts as $post)
       {
-        if ($_post->from_id === $id)
-        {
-          $this->posts[] = $_post;
-        }
+        if ($post->from_id === $id) { $this->posts[] = $post; }
       }
     }
 
     return $this->posts;
+  }
+
+
+  public function getAllFromMonth(int $mm)
+  {
+    $data = DataFetcher::getInstance();
   }
 
 }
