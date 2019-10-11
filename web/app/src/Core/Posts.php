@@ -26,6 +26,7 @@ class Posts
     return $this->posts->getAllFromMonth($yyyy.'-'.$mm);
   }
 
+  //Returns 0
   public function avgCharCountForMonth(string $mm, string $yyyy)
   {
     $posts = $this->fromDate($mm, $yyyy);
@@ -37,7 +38,7 @@ class Posts
       $counter++;
     }
 
-    return round($sum / $counter, 0, PHP_ROUND_HALF_UP);
+    return ($sum == 0 || $counter == 0) ? 0 : round($sum / $counter, 0, PHP_ROUND_HALF_UP);
   }
 
 }

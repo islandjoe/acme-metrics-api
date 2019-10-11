@@ -3,27 +3,26 @@
 class DataFetcher
 {
   private static $instance;
-  private $data;
+  private $store;
 
   private function __construct()
   {
-    $this->data = self::fetch();
+    $this->store = self::fetch();
   }
 
-  public function getData()
+  public function getStore()
   {
-    return $this->data;
+    return $this->store;
   }
 
   private static function fetch()
   {
-    foreach (range(1, 3) as $num)
+    foreach (range(1, 10) as $num)
     {
       $_data[] = json_decode(
         \file_get_contents( APP.'src/View/posts/p'.$num.'.json')
       );
     }
-
     return $_data;
   }
 
@@ -31,9 +30,8 @@ class DataFetcher
   {
     if (self::$instance == null)
     {
-        self::$instance = new DataFetcher();
+      self::$instance = new DataFetcher();
     }
-
     return self::$instance;
   }
 

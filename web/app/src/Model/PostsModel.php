@@ -1,10 +1,10 @@
 <?php namespace Dopmn\Model;
 
 use Exception;
-use Dopmn\Core\Post;
+use Dopmn\Core\Posts;
 use Dopmn\Core\DataFetcher;
 
-class PostModel
+class PostsModel
 {
   use Iterator;
 
@@ -21,7 +21,6 @@ class PostModel
     if ($num > 0 || $num < 11)
     { return $this->store[$num - 1];;
     }
-
     // TODO: Flash the message: 'Only between 1 and 10'
   }
 
@@ -37,7 +36,6 @@ class PostModel
         if ($posts->from_id === $id) { $this->posts[] = $posts; }
       }
     }
-
     return $this->posts;
   }
 
