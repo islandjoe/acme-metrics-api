@@ -27,4 +27,13 @@ class PostsController extends AbstractController
     $this->render('user');
   }
 
+
+  //:posts/month/:mm
+  //  Where `:mm` = '01'..'12'
+  public function month(string $mm, string $yyyy)
+  {
+    $this->posts = (new PostModel())->getAllFromMonth($yyyy.'-'.$mm);
+    $this->render('month');
+  }
+
 }

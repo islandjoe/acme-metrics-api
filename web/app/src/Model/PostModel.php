@@ -6,6 +6,8 @@ use Dopmn\Core\DataFetcher;
 
 class PostModel
 {
+  use Iterator;
+
   private $posts = [];
 
   public function getAllFromPage(int $num)
@@ -21,13 +23,14 @@ class PostModel
     // TODO: Flash the message: 'Only between 1 and 10'
   }
 
+
   public function getAllFromUser(string $id)
   {
-
     $store = DataFetcher::getInstance()->getStore();
-
+    // 👀
     foreach ($this->iterate($store) as $data)
     {
+      // 👀
       foreach ($data as $posts)
       {
         if ($posts->from_id === $id) { $this->posts[] = $posts; }
@@ -38,25 +41,38 @@ class PostModel
   }
 
 
-  public function getAllFromMonth(string $mm)
+  public function getAllFromMonth(string $created_time)
   {
-    $data = DataFetcher::getInstance()->getStore();
-  }
+    $store = DataFetcher::getInstance()->getStore();
 
-  private function iterate(array $data)
-  {
-    foreach ($data as $obj)
+    $dx = function($date) {
+      return \substr($date, 0, 7);
+    };
+
+    foreach ($this->iterate($store) as $data)
     {
-      yield $obj->data->posts;
+      // 👀
+      foreach ($data as $posts)
+      {
+        if ($dx($posts->created_time) === $created_time)
+        {
+          $this->posts[] = $posts;
+        }
+      }
     }
+
+    return $this->posts;
   }
 
 }
 
 trait Iterator
 {
-  public function iterate()
+  public function iterate(array $data)
   {
-
+    foreach ($data as $obj)
+    {
+      yield $obj->data->posts;
+    }
   }
 }
