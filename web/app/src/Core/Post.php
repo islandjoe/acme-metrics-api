@@ -25,7 +25,15 @@ class Post
     $this->type = $type;
   }
 
-  public function getLength(): int
+  public function getDateCreated(bool $year=true, bool $month=true): array
+  {
+    $yyyymm = explode('T', $this->created_time)[0];
+    list($yyyy, $mm) = \explode('-', $yyyymm);
+
+    return ['year'=> $yyyy,'month'=> $mm];
+  }
+
+  private function getLength(): int
   {
     return \mb_strlen($this->message, 'UTF8');
   }
