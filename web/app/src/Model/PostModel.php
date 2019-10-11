@@ -13,7 +13,7 @@ class PostModel
     if ($num > 0 || $num < 11)
     {
       $store = DataFetcher::getInstance();
-      $page  = $store->getData();
+      $page  = $store->getStore();
 
       return $page[$num - 1];;
     }
@@ -24,16 +24,13 @@ class PostModel
   public function getAllFromUser(string $id)
   {
 
-    $store = DataFetcher::getInstance();
-    $posts = $store->getData();
+    $store = DataFetcher::getInstance()->getStore();
 
-    foreach ($posts as $_posts)
+    foreach ($this->iterate($store) as $data)
     {
-      $__posts = $_posts->data->posts;
-
-      foreach ($__posts as $post)
+      foreach ($data as $posts)
       {
-        if ($post->from_id === $id) { $this->posts[] = $post; }
+        if ($posts->from_id === $id) { $this->posts[] = $posts; }
       }
     }
 
@@ -41,9 +38,25 @@ class PostModel
   }
 
 
-  public function getAllFromMonth(int $mm)
+  public function getAllFromMonth(string $mm)
   {
-    $data = DataFetcher::getInstance();
+    $data = DataFetcher::getInstance()->getStore();
   }
 
+  private function iterate(array $data)
+  {
+    foreach ($data as $obj)
+    {
+      yield $obj->data->posts;
+    }
+  }
+
+}
+
+trait Iterator
+{
+  public function iterate()
+  {
+
+  }
 }
