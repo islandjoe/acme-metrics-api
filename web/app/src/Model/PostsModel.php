@@ -1,7 +1,6 @@
 <?php namespace Dopmn\Model;
 
 use Exception;
-use Dopmn\Core\Posts;
 use Dopmn\Core\DataFetcher;
 
 class PostsModel
@@ -40,7 +39,7 @@ class PostsModel
   }
 
 
-  public function getAllFromMonth(string $created_time)
+  public function getAllFromMonth(string $mm, string $yyyy)
   {
     // '2019-09-21T23:05:58+00:00'...
     $dx = function($date) {
@@ -51,7 +50,7 @@ class PostsModel
     { // 👀
       foreach ($data as $posts)
       {
-        if ($dx($posts->created_time) === $created_time)
+        if ($dx($posts->created_time) === $yyyy.'-'.$mm)
         { $this->posts[] = $posts;
         }
       }

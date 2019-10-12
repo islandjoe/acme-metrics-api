@@ -7,6 +7,8 @@ class PostsController extends AbstractController
   protected $home = 'posts';
   protected $posts;
   protected $avg_char_count_month;
+  protected $max_char_count_month;
+  protected $posts_by_week;
 
   public function index()
   {
@@ -36,11 +38,25 @@ class PostsController extends AbstractController
     $this->render('month');
   }
 
-  // Average character count of a post on a given month
+  // @return Average character count of a post on a given month
+  //:posts/avg/:mm/:yyyy
   public function avg(string $mm, string $yyyy)
   {
     $this->avg_char_count_month = (new Posts())->avgCharCountForMonth($mm, $yyyy);
     $this->render('avg');
   }
 
+  //:posts/maximum/:mm/:yyyy
+  public function maximum(string $mm, string $yyyy)
+  {
+    $this->max_char_count_month = (new Posts())->longestCharCountForMonth($mm, $yyyy);
+    $this->render('maximum');
+  }
+
+  //:posts/weekly/:mm/:yyyy
+  public function weekly(string $mm, string $yyyy)
+  {
+    $this->posts_by_week = (new Posts())->weeklyTotal($mm, $yyyy);
+    $this->render('weekly');
+  }
 }
