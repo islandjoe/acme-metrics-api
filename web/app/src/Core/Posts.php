@@ -6,6 +6,7 @@ use Carbon\Carbon;
 class Posts
 {
   private $posts;
+  private $users;
 
   public function __construct()
   {
@@ -35,7 +36,7 @@ class Posts
     $counter = 0;
 
     foreach ($posts as $post) {
-      $sum += mb_strlen($post->message, 'UTF8');
+      $sum += $this->avgCharCount($post->message);
       $counter++;
     }
 
@@ -49,7 +50,7 @@ class Posts
     $max = 0;
 
     foreach ($posts as $post) {
-      $len = mb_strlen($post->message, 'UTF8');
+      $len = $this->avgCharCount($post->message);
 
       if ($len > $max)
       { $max = $len;
@@ -67,6 +68,7 @@ class Posts
 
     //2. Assign posts to their respective week
     $posts_for = [];
+
     $ctr1 = 0;
     $ctr2 = 0;
     $ctr3 = 0;
@@ -85,6 +87,39 @@ class Posts
 
     //3. Sum all posts contained in each week
     return $posts_for;
+  }
+
+  public function avgPerUser()
+  {
+    $this->users = $this->posts->extractAllUsers();
+
+    // for each user id
+    foreach ($this->users as $id)
+    {
+      // all posts from this user
+      foreach ($this->posts->getAllFromUser($id) as $_posts)
+      {
+        $_users[$id] = $_posts;
+      }
+    }
+
+    // Each user => posts
+    $avg_for = [
+      'month1'=> 0,
+      'month2'=> 0,
+      'month3'=> 0,
+      'month4'=> 0,
+      'month5'=> 0,
+      'month6'=> 0
+    ];
+
+
+    return $_users;
+  }
+
+  private function avgCharCount($post): int
+  {
+    return \mb_strlen($post, 'UTF8');
   }
 
 }
