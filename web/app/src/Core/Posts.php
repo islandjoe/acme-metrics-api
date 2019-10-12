@@ -89,32 +89,47 @@ class Posts
     return $posts_for;
   }
 
+  // Average number of posts per user per month
   public function avgPerUser()
   {
     $this->users = $this->posts->extractAllUsers();
+    $posts_for = [];
+    $user;
 
-    // for each user id
+    //1. For each user...
     foreach ($this->users as $id)
     {
-      // all posts from this user
-      foreach ($this->posts->getAllFromUser($id) as $_posts)
+      //2. Gather ALL their posts
+      $user[$id] =  $this->posts->getAllFromUser($id);
+
+      //3. Tally the number of posts by month
+      $posts_ctr = 0;
+      foreach ($user[$id] as $post)
       {
-        $_users[$id] = $_posts;
+        $month_of = function() use ($post) {
+          return 'month-'.Carbon::parse($post->created_time)->month;
+        };
+
+        $posts_for[$month_of()] = $posts_ctr++;
       }
+      $user[$id] = $posts_for; //every month
+      $posts_ctr = 0;
+
+      //4. Get the average
+      $sum = 0;
+      $count = 0;
+      foreach (\array_keys($user[$id]) as $month)
+      {
+        $sum += $user[$id][$month];
+        $count++;
+      }
+      $user[$id]['avg'] = $sum / $count;
+
+      $sum = 0;
+      $count = 0;
     }
 
-    // Each user => posts
-    $avg_for = [
-      'month1'=> 0,
-      'month2'=> 0,
-      'month3'=> 0,
-      'month4'=> 0,
-      'month5'=> 0,
-      'month6'=> 0
-    ];
-
-
-    return $_users;
+    return $user;
   }
 
   private function avgCharCount($post): int

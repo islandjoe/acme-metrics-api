@@ -7,7 +7,7 @@ class DataFetcher
 
   private function __construct()
   {
-    $this->store = self::fetch();
+    $this->store = self::fetchAll();
   }
 
   public function getStore()
@@ -15,7 +15,8 @@ class DataFetcher
     return $this->store;
   }
 
-  private static function fetch()
+  // Fetches ALL the posts in the store
+  private static function fetchAll()
   {
     foreach (range(1, 10) as $num)
     {

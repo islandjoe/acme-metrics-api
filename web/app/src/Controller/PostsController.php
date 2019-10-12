@@ -9,6 +9,7 @@ class PostsController extends AbstractController
   protected $avg_char_count_month;
   protected $max_char_count_month;
   protected $posts_by_week;
+  protected $users;
 
   public function index()
   {
@@ -38,7 +39,7 @@ class PostsController extends AbstractController
     $this->render('month');
   }
 
-  // @return Average character count of a post on a given month
+  // Average character count of a post in a given month
   //:posts/avg/:mm/:yyyy
   public function avg(string $mm, string $yyyy)
   {
@@ -46,6 +47,7 @@ class PostsController extends AbstractController
     $this->render('avg');
   }
 
+  // Total posts by week
   //:posts/maximum/:mm/:yyyy
   public function maximum(string $mm, string $yyyy)
   {
@@ -59,4 +61,18 @@ class PostsController extends AbstractController
     $this->posts_by_week = (new Posts())->weeklyTotal($mm, $yyyy);
     $this->render('weekly');
   }
+
+  // Average number of  posts per user per month
+  //:posts/users/monthly-avg
+  public function users(string $const)
+  {
+    if ($const == 'monthly-avg')
+    {
+      $this->users = (new Posts())->avgPerUser();
+      $this->render('monthly-avg');
+    }
+
+  }
+
+
 }

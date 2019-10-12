@@ -11,7 +11,7 @@ class PostsModel
   private $store;
 
   public function __construct()
-  {
+  { // Fetched ALL posts
     $this->store = DataFetcher::getInstance()->getStore();
   }
 
@@ -23,7 +23,7 @@ class PostsModel
     // TODO: Flash the message: 'Only between 1 and 10'
   }
 
-
+  // @returns ALL the posts from this user
   public function getAllFromUser(string $id)
   {
     // 👀
@@ -56,6 +56,24 @@ class PostsModel
       }
     }
     return $this->posts;
+  }
+
+  // @returns ['user_id', ...]
+  public function extractAllUsers()
+  {
+    $users = [];
+    foreach ($this->iterate($this->store) as $data)
+    {
+      // 👀
+      foreach ($data as $posts)
+      {
+        if ( !in_array($posts->from_id, $users))
+        {
+          $users[] = $posts->from_id;
+        }
+      }
+    }
+    return $users;
   }
 
 }
