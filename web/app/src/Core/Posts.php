@@ -47,15 +47,12 @@ class Posts
   public function longestCharCountForMonth(string $mm, string $yyyy)
   {
     $posts = $this->fromDate($mm, $yyyy);
-    $max = 0;
 
-    foreach ($posts as $post) {
+    $max = \array_reduce($posts, function($acc, $post) {
       $len = $this->avgCharCount($post->message);
-
-      if ($len > $max)
-      { $max = $len;
-      }
-    }
+      if ($len > $acc) $acc = $len;
+      return $acc;
+    }, 0);
 
     return $max;
   }
