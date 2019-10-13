@@ -120,10 +120,13 @@ class Posts
 
       //3. Tally the number of posts by month
       $posts_ctr = 0;
-      foreach ($user[$id] as $post)
+      foreach ($user[$id]->posts as $post)
       {
         $month_of = function() use ($post) {
-          return 'month-'.Carbon::parse($post->created_time)->month;
+          $mm = self::monthOf($post->created_time);
+          if (strlen($mm) == 1) $mm = '0'.$mm;
+
+          return 'month-'.$mm;
         };
 
         $posts_for[$month_of()] = $posts_ctr++;
@@ -145,7 +148,10 @@ class Posts
       $count = 0;
     }
 
-    return $user;
+    return (object) [
+      'post_frequency'=> $user
+    ];
+    // return $user;
   }
 
   private function avgCharCount($post): int

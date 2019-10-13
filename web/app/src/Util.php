@@ -13,4 +13,9 @@ trait Util
   {
     return Carbon::parse($created_time)->weekOfMonth;
   }
+
+  public static function monthOf($created_time)
+  {
+    return Carbon::parse($created_time)->month;
+  }
 }
