@@ -52,6 +52,7 @@ class PostsController extends AbstractController
   public function maximum(string $mm, string $yyyy)
   {
     $this->max_char_count_month = (new Posts())->longestCharCountForMonth($mm, $yyyy);
+
     $this->render('maximum');
   }
 

@@ -2,11 +2,14 @@
 
 use Exception;
 use Dopmn\Core\DataFetcher;
+use Dopmn\Util;
+
 use Carbon\Carbon;
 
 class PostsModel
 {
   use Iterator;
+  use Util;
 
   private $posts = [];
   private $store;
@@ -46,7 +49,6 @@ class PostsModel
 
   public function getAllFromMonth(string $mm, string $yyyy)
   {
-    // '2019-09-21T23:05:58+00:00'...
     $dx = function($date) {
       return \substr($date, 0, 7); //-> '2019-09'
     };
@@ -61,10 +63,8 @@ class PostsModel
       }
     }
 
-    $month = Carbon::create($yyyy, $mm)->shortMonthName;
-
     return (object) [
-      'month'=> $month,
+      'month'=> $mm,
       'year'=> $yyyy,
       'posts'=> $this->posts
     ];

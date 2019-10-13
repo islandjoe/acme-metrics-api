@@ -1,10 +1,12 @@
 <?php namespace Dopmn\Core;
 
 use Dopmn\Model\PostsModel;
-use Carbon\Carbon;
+use Dopmn\Util;
 
 class Posts
 {
+  use Util;
+
   private $posts;
   private $users;
 
@@ -42,15 +44,16 @@ class Posts
 
     $result = ($sum == 0 || $counter == 0) ? 0 : round($sum / $counter, 0, PHP_ROUND_HALF_UP);
 
-    return (object) [
-      'month'=> $mm, 'year'=> $yyyy, 'avg_post_length'=> $result
-    ];
+    $posts['avg_post_length'] = $result;
+    $posts['month'] = self::shortMonthName($yyyy, $mm);
+
+    return $posts;
   }
 
-  // 👍
   public function longestCharCountForMonth(string $mm, string $yyyy)
   {
-    $posts = $this->fromDate($mm, $yyyy);
+    $object = $this->fromDate($mm, $yyyy);
+    $posts = (array) $object->posts;
 
     $max = \array_reduce($posts, function($acc, $post) {
       $len = $this->avgCharCount($post->message);
@@ -62,7 +65,11 @@ class Posts
       return $acc;
     }, 0);
 
-    return $max;
+    return (object) [
+      'month'=> self::shortMonthName($yyyy, $mm),
+      'year'=> $yyyy,
+      'largest_count'=> $max
+    ];
   }
 
   // @return  Total number of posts by week
