@@ -2,6 +2,7 @@
 
 use Exception;
 use Dopmn\Core\DataFetcher;
+use Carbon\Carbon;
 
 class PostsModel
 {
@@ -59,7 +60,14 @@ class PostsModel
         }
       }
     }
-    return $this->posts;
+
+    $month = Carbon::create($yyyy, $mm)->shortMonthName;
+
+    return (object) [
+      'month'=> $month,
+      'year'=> $yyyy,
+      'posts'=> $this->posts
+    ];
   }
 
   // @returns ['user_id', ...]
