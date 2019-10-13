@@ -8,4 +8,9 @@ trait Util
   {
     return Carbon::create($yyyy, $mm)->shortMonthName;
   }
+
+  public static function weekOfMonth($created_time)
+  {
+    return Carbon::parse($created_time)->weekOfMonth;
+  }
 }

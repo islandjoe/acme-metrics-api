@@ -7,7 +7,7 @@ class Posts
 {
   use Util;
 
-  private $posts;
+  private $object;
   private $users;
 
   public function __construct()
@@ -33,29 +33,29 @@ class Posts
   //Returns 0
   public function avgCharCountForMonth(string $mm, string $yyyy)
   {
-    $posts = $this->fromDate($mm, $yyyy);
+    $object = $this->fromDate($mm, $yyyy);
 
     $sum = 0;
     $counter = 0;
-    foreach ($posts as $post) {
+    foreach ($object as $post) {
       $sum += $this->avgCharCount($post->message);
       $counter++;
     }
 
     $result = ($sum == 0 || $counter == 0) ? 0 : round($sum / $counter, 0, PHP_ROUND_HALF_UP);
 
-    $posts['avg_post_length'] = $result;
-    $posts['month'] = self::shortMonthName($yyyy, $mm);
+    $object['avg_post_length'] = $result;
+    $object['month'] = self::shortMonthName($yyyy, $mm);
 
-    return $posts;
+    return $object;
   }
 
   public function longestCharCountForMonth(string $mm, string $yyyy)
   {
     $object = $this->fromDate($mm, $yyyy);
-    $posts = (array) $object->posts;
+    $object = (array) $object->posts;
 
-    $max = \array_reduce($posts, function($acc, $post) {
+    $max = \array_reduce($object, function($acc, $post) {
       $len = $this->avgCharCount($post->message);
 
       if ($len > $acc)
@@ -73,11 +73,12 @@ class Posts
   }
 
   // @return  Total number of posts by week
-  public function weeklyTotal(string $mm, string $yyyy): array
+  public function weeklyTotal(string $mm, string $yyyy)
   {
     //1. Get all posts for the month
-    $posts = $this->posts->getAllFromMonth($mm, $yyyy);
+    $object = $this->posts->getAllFromMonth($mm, $yyyy);
 
+    // var_dump($object->posts);exit();
     //2. Assign posts to their respective week
     $posts_for = [];
 
@@ -86,10 +87,9 @@ class Posts
     $ctr3 = 0;
     $ctr4 = 0;
     $ctr5 = 0;
-
-    foreach ($posts as $id=> $post)
+    foreach ($object->posts as $post)
     {
-      $week = Carbon::parse($post->created_time)->weekOfMonth;
+      $week = self::weekOfMonth($post->created_time);
       if ($week == 1) $posts_for['week1'] = $ctr1++;
       if ($week == 2) $posts_for['week2'] = $ctr2++;
       if ($week == 3) $posts_for['week3'] = $ctr3++;
@@ -98,7 +98,10 @@ class Posts
     }
 
     //3. Sum all posts contained in each week
-    return $posts_for;
+    return (object) [
+      'total_posts'=> $posts_for
+    ];
+    // return $posts_for;
 
   }
 

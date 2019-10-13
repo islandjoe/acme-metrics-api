@@ -47,7 +47,7 @@ class PostsModel
   }
 
 
-  public function getAllFromMonth(string $mm, string $yyyy)
+  public function getAllFromMonth(string $mm, string $yyyy): object
   {
     $dx = function($date) {
       return \substr($date, 0, 7); //-> '2019-09'
