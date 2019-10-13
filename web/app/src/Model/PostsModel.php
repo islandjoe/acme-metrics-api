@@ -33,40 +33,13 @@ class PostsModel
   // Fetch ALL the posts of this user
   public function getAllFromUser(string $id)
   {
-    // foreach ($this->iterate($this->store) as $data)
-    // {
-    //   foreach ($data as $posts)
-    //   {
-    //     if ($posts->from_id === $id) { $this->posts[] = $posts; }
-    //   }
-    // }
-    foreach ($this->store as $store)
+    foreach ($this->iterate($this->store) as $data)
     {
-      // \print_r($store->data);
-      $data[] = $store->data;
+      foreach ($data as $posts)
+      {
+        if ($posts->from_id === $id) { $this->posts[] = $posts; }
+      }
     }
-// print_r( $posts );
-
-    foreach ($data as $foo)
-    {
-      // print_r( $foo->posts );
-      $bar[] = $foo;
-    }
-
-    // print_r( $posts );
-    foreach ($bar as $obj)
-    {
-      // print_r( $obj->posts );
-      $posts[] = $obj;
-      // \var_dump($post->from_id);
-      // if ($post->from_id === $id) { $this->posts[] = $post; }
-    }
-
-    foreach ($posts as $entry) {
-      print_r( $entry[0]->created_time );
-    }
-
-// print_r( $this->posts );
 
     return (object) [
       'user_id'=> $id,
