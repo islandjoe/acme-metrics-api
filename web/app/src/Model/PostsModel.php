@@ -36,7 +36,10 @@ class PostsModel
         if ($posts->from_id === $id) { $this->posts[] = $posts; }
       }
     }
-    return $this->posts;
+    return (object) [
+      'user_id'=> $id,
+      'posts'=> $this->posts
+    ];
   }
 
 
