@@ -135,21 +135,21 @@ class Posts
       $posts_ctr = 0;
 
       //4. Get the average
-      $sum = 0;
-      $count = 0;
-      foreach (\array_keys($user[$id]) as $month)
-      {
-        $sum += $user[$id][$month];
-        $count++;
-      }
-      $user[$id]['avg'] = $sum / $count;
+      $users_ids = \array_keys($user[$id]);
 
-      $sum = 0;
-      $count = 0;
+      $sum = \array_reduce(
+          $users_ids,
+          function($_sum, $mm) use ($user, $id) {
+            return $_sum += $user[$id][$mm];
+          }
+      );
+
+      $rounded = round($sum / count($users_ids), 0, PHP_ROUND_HALF_UP);
+      $user[$id]['avg'] = $rounded;
     }
-
+// var_dump( $user[$id]);exit();
     return (object) [
-      'post_frequency'=> $user
+      'posting_frequency'=> $user
     ];
     // return $user;
   }
