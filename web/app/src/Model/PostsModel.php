@@ -15,12 +15,13 @@ class PostsModel
     $this->store = DataFetcher::getInstance()->getStore();
   }
 
-  public function getAllFromPage(int $num)
+  public function getAllFromPage(int $num): object
   {
-    if ($num > 0 || $num < 11)
-    { return $this->store[$num - 1];;
+    if ($num > 0 && $num < 11)
+    { return $this->store[$num - 1]->data;
     }
-    // TODO: Flash the message: 'Only between 1 and 10'
+
+    return (object)['page'=> $num, 'posts'=> []];
   }
 
   // @returns ALL the posts from this user
