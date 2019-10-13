@@ -18,4 +18,9 @@ trait Util
   {
     return Carbon::parse($created_time)->month;
   }
+
+  public static function rounded(int $expr)
+  {
+    return round($expr, 0, PHP_ROUND_HALF_UP);
+  }
 }

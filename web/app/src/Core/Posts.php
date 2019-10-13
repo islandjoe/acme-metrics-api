@@ -30,22 +30,25 @@ class Posts
     return $this->posts->getAllFromMonth($mm, $yyyy);
   }
 
-  //Returns 0
+  //✓
   public function avgCharCountForMonth(string $mm, string $yyyy)
   {
     $object = $this->fromDate($mm, $yyyy);
 
-    $sum = 0;
-    $counter = 0;
-    foreach ($object as $post) {
-      $sum += $this->avgCharCount($post->message);
-      $counter++;
-    }
+    $sum = \array_reduce(
+      $object->posts,
+      function($acc, $post) {
+          return $acc += $this->avgCharCount($post->message);
+     }
+    );
 
-    $result = ($sum == 0 || $counter == 0) ? 0 : round($sum / $counter, 0, PHP_ROUND_HALF_UP);
+    $counter = count($object->posts);
 
-    $object['avg_post_length'] = $result;
-    $object['month'] = self::shortMonthName($yyyy, $mm);
+    $result = ($sum == 0 || $counter == 0) ? 0 :
+              round($sum / $counter, 0, PHP_ROUND_HALF_UP);
+
+    $object->avg_post_length = $result;
+    $object->month = self::shortMonthName($yyyy, $mm);
 
     return $object;
   }
@@ -68,7 +71,7 @@ class Posts
     return (object) [
       'month'=> self::shortMonthName($yyyy, $mm),
       'year'=> $yyyy,
-      'largest_count'=> $max
+      'largest_post_length'=> $max
     ];
   }
 
@@ -78,39 +81,35 @@ class Posts
     //1. Get all posts for the month
     $object = $this->posts->getAllFromMonth($mm, $yyyy);
 
-    // var_dump($object->posts);exit();
-    //2. Assign posts to their respective week
-    $posts_for = [];
+    //2. Place posts in their respective week
+    $posts_for  = [];
 
-    $ctr1 = 0;
-    $ctr2 = 0;
-    $ctr3 = 0;
-    $ctr4 = 0;
-    $ctr5 = 0;
     foreach ($object->posts as $post)
     {
-      $week = self::weekOfMonth($post->created_time);
-      if ($week == 1) $posts_for['week1'] = $ctr1++;
-      if ($week == 2) $posts_for['week2'] = $ctr2++;
-      if ($week == 3) $posts_for['week3'] = $ctr3++;
-      if ($week == 4) $posts_for['week4'] = $ctr4++;
-      if ($week == 5) $posts_for['week5'] = $ctr5++;
+      $week = 'week'.self::weekOfMonth($post->created_time);
+
+      if (!array_key_exists($week, $posts_for))
+      { $posts_for[$week] = 0;
+      }
+
+      $posts_for[$week] += 1;
     }
 
     //3. Sum all posts contained in each week
     return (object) [
       'total_posts'=> $posts_for
     ];
-    // return $posts_for;
 
   }
 
+  // ✓
   // Average number of posts per user per month
   public function avgPerUser()
   {
     $this->users = $this->posts->extractAllUsers();
+
     $posts_for = [];
-    $user;
+    $user      = [];
 
     //1. For each user...
     foreach ($this->users as $id)
@@ -122,14 +121,10 @@ class Posts
       $posts_ctr = 0;
       foreach ($user[$id]->posts as $post)
       {
-        $month_of = function() use ($post) {
-          $mm = self::monthOf($post->created_time);
-          if (strlen($mm) == 1) $mm = '0'.$mm;
+        $mm = self::monthOf($post->created_time);
+        $mo = (strlen($mm) === 1 ? "0{$mm}" : $mm);
 
-          return 'month-'.$mm;
-        };
-
-        $posts_for[$month_of()] = $posts_ctr++;
+        $posts_for["month-{$mo}"] = $posts_ctr++;
       }
       $user[$id] = $posts_for; //every month
       $posts_ctr = 0;
@@ -137,6 +132,7 @@ class Posts
       //4. Get the average
       $users_ids = \array_keys($user[$id]);
 
+      //👍
       $sum = \array_reduce(
           $users_ids,
           function($_sum, $mm) use ($user, $id) {
@@ -144,10 +140,9 @@ class Posts
           }
       );
 
-      $rounded = round($sum / count($users_ids), 0, PHP_ROUND_HALF_UP);
-      $user[$id]['avg'] = $rounded;
+      $user[$id]['avg'] = self::rounded($sum/count($users_ids));
     }
-// var_dump( $user[$id]);exit();
+
     return (object) [
       'posting_frequency'=> $user
     ];
