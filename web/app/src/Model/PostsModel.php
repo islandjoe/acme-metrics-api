@@ -73,19 +73,15 @@ class PostsModel
   // Fetch all user ids: ['user_id', ...]
   public function extractAllUsers()
   {
+    $store = $this->store;
     $users = [];
-    foreach ($this->iterate($this->store) as $data)
+
+    foreach ($this->iterate($store) as $data)
     {
-      // 👀
-      foreach ($data as $posts)
-      {
-        if ( !in_array($posts->from_id, $users))
-        {
-          $users[] = $posts->from_id;
-        }
-      }
+      $users = \array_column((array)$data, 'from_id');
     }
-    return $users;
+
+    return array_unique($users);
   }
 
 }
