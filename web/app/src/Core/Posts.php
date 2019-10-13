@@ -30,7 +30,6 @@ class Posts
     return $this->posts->getAllFromMonth($mm, $yyyy);
   }
 
-  //✓
   public function avgCharCountForMonth(string $mm, string $yyyy)
   {
     $object = $this->fromDate($mm, $yyyy);
@@ -38,7 +37,7 @@ class Posts
     $sum = \array_reduce(
       $object->posts,
       function($acc, $post) {
-          return $acc += $this->avgCharCount($post->message);
+        return $acc += $this->avgCharCount($post->message);
      }
     );
 
@@ -56,10 +55,10 @@ class Posts
   public function longestCharCountForMonth(string $mm, string $yyyy)
   {
     $object = $this->fromDate($mm, $yyyy);
-    $object = (array) $object->posts;
+    $posts = (array) $object->posts;
 
-    $max = \array_reduce($object, function($acc, $post) {
-      $len = $this->avgCharCount($post->message);
+    $max = \array_reduce($posts, function($acc, $_post) {
+      $len = $this->avgCharCount($_post->message);
 
       if ($len > $acc)
       { $acc = $len;
@@ -69,13 +68,13 @@ class Posts
     }, 0);
 
     return (object) [
-      'month'=> self::shortMonthName($yyyy, $mm),
-      'year'=> $yyyy,
+      'month'   => self::shortMonthName($yyyy, $mm),
+      'year'    => $yyyy,
       'largest_post_length'=> $max
     ];
   }
 
-  // @return  Total number of posts by week
+  // Return total number of posts by week
   public function weeklyTotal(string $mm, string $yyyy)
   {
     //1. Get all posts for the month
@@ -95,14 +94,12 @@ class Posts
       $posts_for[$week] += 1;
     }
 
-    //3. Sum all posts contained in each week
     return (object) [
-      'total_posts'=> $posts_for
+      'total_posts' => $posts_for
     ];
 
   }
 
-  // ✓
   // Average number of posts per user per month
   public function avgPerUser()
   {
@@ -132,7 +129,6 @@ class Posts
       //4. Get the average
       $users_ids = \array_keys($user[$id]);
 
-      //👍
       $sum = \array_reduce(
           $users_ids,
           function($_sum, $mm) use ($user, $id) {
@@ -144,7 +140,7 @@ class Posts
     }
 
     return (object) [
-      'posting_frequency'=> $user
+      'posting_frequency' => $user
     ];
     // return $user;
   }

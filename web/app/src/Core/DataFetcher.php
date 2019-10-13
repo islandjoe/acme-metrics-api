@@ -3,10 +3,13 @@
 class DataFetcher
 {
   private static $instance;
+  private static $range;
   private $store;
 
   private function __construct()
   {
+    self::$range = range(1, 10);
+
     $this->store = self::fetchAll();
   }
 
@@ -18,7 +21,7 @@ class DataFetcher
   // Fetches ALL the posts in the store
   private static function fetchAll()
   {
-    foreach (range(1, 10) as $num)
+    foreach (self::$range as $num)
     {
       $_data[] = json_decode(
         \file_get_contents( APP.'src/View/posts/p'.$num.'.json')

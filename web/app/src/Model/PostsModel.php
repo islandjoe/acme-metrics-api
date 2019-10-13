@@ -15,7 +15,7 @@ class PostsModel
   private $store;
 
   public function __construct()
-  { // Fetched ALL posts
+  { // Fetch ALL posts
     $this->store = DataFetcher::getInstance()->getStore();
   }
 
@@ -28,7 +28,7 @@ class PostsModel
     return (object)['page'=> $num, 'posts'=> []];
   }
 
-  // @returns ALL the posts from this user
+  // Fetch ALL the posts of this user
   public function getAllFromUser(string $id)
   {
     // 👀
@@ -46,7 +46,7 @@ class PostsModel
     ];
   }
 
-
+  // Fetch ALL posts from all users on month `mm`
   public function getAllFromMonth(string $mm, string $yyyy): object
   {
     $dx = function($date) {
@@ -64,13 +64,13 @@ class PostsModel
     }
 
     return (object) [
-      'month'=> $mm,
-      'year'=> $yyyy,
+      'month'=> self::shortMonthName($yyyy, $mm),
+      'year' => $yyyy,
       'posts'=> $this->posts
     ];
   }
 
-  // @returns ['user_id', ...]
+  // Fetch all user ids: ['user_id', ...]
   public function extractAllUsers()
   {
     $users = [];

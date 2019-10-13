@@ -35,7 +35,7 @@ class Application
         }
         catch (Exception $e)
         {
-            (new ErrorController())->index();
+            throw new \Exception('**sad trombone**');
         }
     }
 
@@ -55,11 +55,6 @@ class Application
 
             // but keep the args, if any
             $this->url_params = array_values($url);
-
-            // for debugging. uncomment this if you have problems with the URL
-            // echo 'Controller: ' . $this->url_controller . '<br>';
-            // echo 'Action: ' . $this->url_action . '<br>';
-            // echo 'Parameters: ' . print_r($this->url_params, true) . '<br>';
         }
     }
 
@@ -75,7 +70,7 @@ class Application
         return !$this->url_controller;
     }
 
-    private function controller()
+    private function controller(): object
     {
         $controller = "Dopmn\\Controller\\".ucfirst($this->url_controller).'Controller';
 
@@ -84,9 +79,14 @@ class Application
 
     private function controllerHasAction(): bool
     {
-        return method_exists($this->url_controller, $this->url_action)
-               &&
-               is_callable(array($this->url_controller, $this->url_action));
+        return method_exists(
+            $this->url_controller,
+            $this->url_action)
+        &&
+            is_callable(
+                array($this->url_controller,
+                $this->url_action)
+        );
     }
 
     private function hasArguments(): bool

@@ -39,7 +39,7 @@ class PostsController extends AbstractController
     $this->render('month');
   }
 
-  // Average character count of a post in a given month
+  // Average character count of a post on a given month
   //:posts/avg/:mm/:yyyy
   public function avg(string $mm, string $yyyy)
   {
