@@ -25,21 +25,49 @@ class PostsModel
     { return $this->store[$num - 1]->data;
     }
 
-    return (object)['page'=> $num, 'posts'=> []];
+    return (object)[
+      'page'=> $num, 'posts'=> []
+    ];
   }
 
   // Fetch ALL the posts of this user
   public function getAllFromUser(string $id)
   {
-    // 👀
-    foreach ($this->iterate($this->store) as $data)
+    // foreach ($this->iterate($this->store) as $data)
+    // {
+    //   foreach ($data as $posts)
+    //   {
+    //     if ($posts->from_id === $id) { $this->posts[] = $posts; }
+    //   }
+    // }
+    foreach ($this->store as $store)
     {
-      // 👀
-      foreach ($data as $posts)
-      {
-        if ($posts->from_id === $id) { $this->posts[] = $posts; }
-      }
+      // \print_r($store->data);
+      $data[] = $store->data;
     }
+// print_r( $posts );
+
+    foreach ($data as $foo)
+    {
+      // print_r( $foo->posts );
+      $bar[] = $foo;
+    }
+
+    // print_r( $posts );
+    foreach ($bar as $obj)
+    {
+      // print_r( $obj->posts );
+      $posts[] = $obj;
+      // \var_dump($post->from_id);
+      // if ($post->from_id === $id) { $this->posts[] = $post; }
+    }
+
+    foreach ($posts as $entry) {
+      print_r( $entry[0]->created_time );
+    }
+
+// print_r( $this->posts );
+
     return (object) [
       'user_id'=> $id,
       'posts'=> $this->posts
@@ -49,15 +77,11 @@ class PostsModel
   // Fetch ALL posts from all users on month `mm`
   public function getAllFromMonth(string $mm, string $yyyy): object
   {
-    $dx = function($date) {
-      return \substr($date, 0, 7); //-> '2019-09'
-    };
-
     foreach ($this->iterate($this->store) as $data)
-    { // 👀
+    {
       foreach ($data as $posts)
       {
-        if ($dx($posts->created_time) === $yyyy.'-'.$mm)
+        if (\substr($posts->created_time, 0, 7) === "{$yyyy}-{$mm}")
         { $this->posts[] = $posts;
         }
       }
@@ -73,14 +97,10 @@ class PostsModel
   // Fetch all user ids: ['user_id', ...]
   public function extractAllUsers()
   {
-    $store = $this->store;
-    $users = [];
-
-    foreach ($this->iterate($store) as $data)
+    foreach ($this->iterate($this->store) as $data)
     {
-      $users = \array_column((array)$data, 'from_id');
+      $users = array_column((array) $data, 'from_id');
     }
-
     return array_unique($users);
   }
 

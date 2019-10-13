@@ -70,7 +70,7 @@ class Posts
     return (object) [
       'month'   => self::shortMonthName($yyyy, $mm),
       'year'    => $yyyy,
-      'largest_post_length'=> $max
+      'longest_post_length'=> $max
     ];
   }
 
