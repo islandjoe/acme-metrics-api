@@ -32,25 +32,33 @@ class Posts
   public function avgCharCountForMonth(string $mm, string $yyyy)
   {
     $posts = $this->fromDate($mm, $yyyy);
+
     $sum = 0;
     $counter = 0;
-
     foreach ($posts as $post) {
       $sum += $this->avgCharCount($post->message);
       $counter++;
     }
 
-    return ($sum == 0 || $counter == 0) ? 0 : round($sum / $counter, 0, PHP_ROUND_HALF_UP);
+    $result = ($sum == 0 || $counter == 0) ? 0 : round($sum / $counter, 0, PHP_ROUND_HALF_UP);
+
+    return (object) [
+      'month'=> $mm, 'year'=> $yyyy, 'avg_post_length'=> $result
+    ];
   }
 
-
+  // 👍
   public function longestCharCountForMonth(string $mm, string $yyyy)
   {
     $posts = $this->fromDate($mm, $yyyy);
 
     $max = \array_reduce($posts, function($acc, $post) {
       $len = $this->avgCharCount($post->message);
-      if ($len > $acc) $acc = $len;
+
+      if ($len > $acc)
+      { $acc = $len;
+      }
+
       return $acc;
     }, 0);
 
@@ -84,6 +92,7 @@ class Posts
 
     //3. Sum all posts contained in each week
     return $posts_for;
+
   }
 
   // Average number of posts per user per month
