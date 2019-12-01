@@ -1,4 +1,4 @@
-# Supermetrics API assignment
+# Metrics API
 
 **Stats on the following:**
 - [Average post character length per month](#average-post-character-length-per-month)
